@@ -1,0 +1,18 @@
+metadata:
+  name: debian-cis
+  description: Run debian-cis benchmark
+  os:
+    - debian
+  devices:
+    - qemu
+
+run:
+  steps:
+    - cd debian-cis
+    - cp debian/default /etc/default/cis-hardening
+    - sed -i "s#CIS_LIB_DIR=.*#CIS_LIB_DIR='$(pwd)'/lib#" /etc/default/cis-hardening
+    - sed -i "s#CIS_CHECKS_DIR=.*#CIS_CHECKS_DIR='$(pwd)'/bin/hardening#" /etc/default/cis-hardening
+    - sed -i "s#CIS_CONF_DIR=.*#CIS_CONF_DIR='$(pwd)'/etc#" /etc/default/cis-hardening
+    - sed -i "s#CIS_TMP_DIR=.*#CIS_TMP_DIR='$(pwd)'/tmp#" /etc/default/cis-hardening
+    - chmod +x bin/hardening.sh
+    - ./bin/hardening.sh --audit-all
